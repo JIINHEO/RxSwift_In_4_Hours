@@ -96,12 +96,12 @@ class ViewController: UIViewController {
                     
                 case .completed:
                 // ompleted나 error 때에 수행을 다했다 여겨서 클로저가 없어짐 -> rc가 감소함
-                    break 
+                    break
                 case .error:
                     break
                 }
             }
         // 취소시킴
-        disposable.dispose()
+//        disposable.dispose()
     }
 }
