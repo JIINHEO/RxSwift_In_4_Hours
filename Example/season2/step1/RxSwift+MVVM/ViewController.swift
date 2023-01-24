@@ -57,10 +57,26 @@ class ViewController: UIViewController {
         
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
-
+        
         self.downloadJson(MEMBER_LIST_URL) { json in
             self.editView.text = json
             self.setVisibleWithAnimation(self.activityIndicator, false)
+            
+            // 만약 다양한 처리를 해야한다고 했을 때 이런 식이 되어버리고 귀찮아짐
+            self.downloadJson(MEMBER_LIST_URL) { json in
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false)
+                
+                self.downloadJson(MEMBER_LIST_URL) { json in
+                    self.editView.text = json
+                    self.setVisibleWithAnimation(self.activityIndicator, false)
+                    
+                    self.downloadJson(MEMBER_LIST_URL) { json in
+                        self.editView.text = json
+                        self.setVisibleWithAnimation(self.activityIndicator, false)
+                    }
+                }
+            }
         }
     }
 }
