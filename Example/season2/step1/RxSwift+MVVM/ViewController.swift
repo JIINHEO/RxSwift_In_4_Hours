@@ -68,8 +68,8 @@ class ViewController: UIViewController {
     
     
     // 함수 분리
-    func downloadJson(_ url: String) -> Observable<String?> {
-        return Observable.from(["Hello", "World"]) // sugar api
+    func downloadJson(_ url: String) -> Observable<String> {
+//        return Observable.from(["Hello", "World"]) // sugar api
 //        return Observable.create { emmiter in
 //            emmiter.onNext("Hello World")
 //            emmiter.onCompleted()
@@ -77,30 +77,30 @@ class ViewController: UIViewController {
 //        }
         
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
-//        return Observable.create { emitter in
-//            let url = URL(string: url)!
-//
-//            // URLSession 자체가 메인스레드가 아닌 다른스레드에서 실행됨
-//            // 따라서 onNext..Error 등 도 urlsession이 처리하고 있는 그 스레드에서 동작함
-//            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
-//                guard error == nil else {
-//                    emitter.onError(error!)
-//                    return
-//                }
-//
-//                if let dat = data, let json = String(data: dat, encoding: .utf8) {
-//                    emitter.onNext(json)
-//                }
-//
-//                emitter.onCompleted()
-//            }
-//
-//            task.resume()
-//
-//            return Disposables.create() {
-//                task.cancel()
-//            }
-//        }
+        return Observable.create { emitter in
+            let url = URL(string: url)!
+
+            // URLSession 자체가 메인스레드가 아닌 다른스레드에서 실행됨
+            // 따라서 onNext..Error 등 도 urlsession이 처리하고 있는 그 스레드에서 동작함
+            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+                guard error == nil else {
+                    emitter.onError(error!)
+                    return
+                }
+
+                if let dat = data, let json = String(data: dat, encoding: .utf8) {
+                    emitter.onNext(json)
+                }
+
+                emitter.onCompleted()
+            }
+
+            task.resume()
+
+            return Disposables.create() {
+                task.cancel()
+            }
+        }
 
 //        return Observable.create() { f in
 //            // 그렇다면 completion 말고 return값으로 받을 수 없을까?
@@ -128,6 +128,16 @@ class ViewController: UIViewController {
     @IBAction func onLoad() {
         editView.text = ""
         setVisibleWithAnimation(activityIndicator, true)
+        
+        let jsonObservable = downloadJson(MEMBER_LIST_URL)
+        let helloObservable = Observable.just("Hello world")
+        
+        Observable.zip(jsonObservable, helloObservable) { $1 + "\n" + $0}
+            .observeOn(MainScheduler.instance)
+            .subscribe(){ json in
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false)
+            }
         
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
