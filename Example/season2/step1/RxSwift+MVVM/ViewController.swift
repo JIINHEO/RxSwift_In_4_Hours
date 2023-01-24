@@ -33,18 +33,26 @@ class ViewController: UIViewController {
     }
 
     // MARK: SYNC
-
+    
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
-
+    
     @IBAction func onLoad() {
         editView.text = ""
         setVisibleWithAnimation(activityIndicator, true)
-
-        let url = URL(string: MEMBER_LIST_URL)!
-        let data = try! Data(contentsOf: url)
-        let json = String(data: data, encoding: .utf8)
-        self.editView.text = json
         
-        self.setVisibleWithAnimation(self.activityIndicator, false)
+        // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
+        // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
+        
+        DispatchQueue.global().async {
+            let url = URL(string: MEMBER_LIST_URL)!
+            let data = try! Data(contentsOf: url)
+            let json = String(data: data, encoding: .utf8)
+
+            DispatchQueue.main.async {
+                // UI작업은 main 에서
+                self.editView.text = json
+                self.setVisibleWithAnimation(self.activityIndicator, false)
+            }
+        }
     }
 }
