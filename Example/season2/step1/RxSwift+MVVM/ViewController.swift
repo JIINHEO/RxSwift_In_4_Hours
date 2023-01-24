@@ -56,11 +56,25 @@ class ViewController: UIViewController {
     func downloadJson(_ url: String) -> Observable<String?> {
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
         return Observable.create { emitter in
-            emitter.onNext("Hello") // 데이터를 여러개 내려줘도 됨
-            emitter.onNext("World")
-            emitter.onCompleted()
+            let url = URL(string: url)!
+            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+                guard error == nil else {
+                    emitter.onError(error!)
+                    return
+                }
+                
+                if let dat = data, let json = String(data: dat, encoding: .utf8) {
+                    emitter.onNext(json)
+                }
+                
+                emitter.onCompleted()
+            }
             
-            return Disposables.create()
+            task.resume()
+            
+            return Disposables.create() {
+                task.cancel()
+            }
         }
 
 //        return Observable.create() { f in
@@ -75,7 +89,7 @@ class ViewController: UIViewController {
 //                    // 본 함수가 끝나고 나서 나  중에 실행되는 함수여서 escaping을 해준다.
 //                    // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
 //                    f.onNext(json)
-//                    f.onCompleted() // 순환참조 문제 해결
+//                    f.onCompleted() // 순환참조 문제 해g결
 //                }
 //            }
 //            return Disposables.create()
