@@ -143,6 +143,8 @@ class ViewController: UIViewController {
             .map {"\($0)"} // oprator
             .observeOn(MainScheduler.instance) // data를 중간에 바꾸는 sugar들을 oprator라고 한다
         // https://reactivex.io/documentation/operators.html 에 가면 operator를 볼 수 있다.
+            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default))
+        // g 후에 observeOn에 다다르면 그 때 부터 observeOn에서 지정한 스레드로 변경됨 (위치 상관 없음)
             .subscribe { json in
 //                DispatchQueue.main. async {
                     self.editView.text = json
