@@ -19,6 +19,8 @@ class MenuListViewModel {
     ]
     
     var itemsCount: Int = 5
-    var totalPrice:Observable<Int> = Observable.just(10_000)
+    var totalPrice:PublishSubject<Int> = PublishSubject()
     
+    // Subject
+    // obserbable 밖에서 값을 control해서 새로운 값을 집어넣어줄 수 있음 
 }

@@ -57,7 +57,9 @@ class MenuViewController: UIViewController {
         // showAlert("Order Fail", "No Orders")
 //        performSegue(withIdentifier: "OrderViewController", sender: nil)
         
-//        viewModel.totalPrice += 100
+        viewModel.totalPrice.onNext(100)
+        // 그럼 외부에서 값을 넣어줘서 보여줄 수 없을까? -> 그래서 나온게 subject이다.
+        
         // data가 바뀔때 마다 updateUI를 여기 저기서 호출해줘야 UI가 변경됨 
         updateUI()
     }
