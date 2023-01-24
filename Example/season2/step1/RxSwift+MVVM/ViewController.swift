@@ -69,31 +69,38 @@ class ViewController: UIViewController {
     
     // 함수 분리
     func downloadJson(_ url: String) -> Observable<String?> {
+        return Observable.just("Hello World")
+//        return Observable.create { emmiter in
+//            emmiter.onNext("Hello World")
+//            emmiter.onCompleted()
+//            return Disposables.create()
+//        }
+        
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
-        return Observable.create { emitter in
-            let url = URL(string: url)!
-            
-            // URLSession 자체가 메인스레드가 아닌 다른스레드에서 실행됨
-            // 따라서 onNext..Error 등 도 urlsession이 처리하고 있는 그 스레드에서 동작함
-            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
-                guard error == nil else {
-                    emitter.onError(error!)
-                    return
-                }
-                
-                if let dat = data, let json = String(data: dat, encoding: .utf8) {
-                    emitter.onNext(json)
-                }
-                
-                emitter.onCompleted()
-            }
-            
-            task.resume()
-            
-            return Disposables.create() {
-                task.cancel()
-            }
-        }
+//        return Observable.create { emitter in
+//            let url = URL(string: url)!
+//
+//            // URLSession 자체가 메인스레드가 아닌 다른스레드에서 실행됨
+//            // 따라서 onNext..Error 등 도 urlsession이 처리하고 있는 그 스레드에서 동작함
+//            let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
+//                guard error == nil else {
+//                    emitter.onError(error!)
+//                    return
+//                }
+//
+//                if let dat = data, let json = String(data: dat, encoding: .utf8) {
+//                    emitter.onNext(json)
+//                }
+//
+//                emitter.onCompleted()
+//            }
+//
+//            task.resume()
+//
+//            return Disposables.create() {
+//                task.cancel()
+//            }
+//        }
 
 //        return Observable.create() { f in
 //            // 그렇다면 completion 말고 return값으로 받을 수 없을까?
