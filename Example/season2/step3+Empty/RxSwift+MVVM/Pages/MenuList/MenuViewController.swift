@@ -29,7 +29,7 @@ class MenuViewController: UIViewController {
         
         viewModel.itemCount
             .map {"\($0)"}
-            .bind(to: itgiemCountLabel.rx.text)
+            .bind(to: itemCountLabel.rx.text)
 //            .subscribe {
 //                self.itgiemCountLabel.text = $0
 //            }
@@ -63,7 +63,7 @@ class MenuViewController: UIViewController {
 
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
-    @IBOutlet var itgiemCountLabel: UILabel!
+    @IBOutlet var itemCountLabel: UILabel!
     @IBOutlet var totalPrice: UILabel!
 
     @IBAction func onClear() {
