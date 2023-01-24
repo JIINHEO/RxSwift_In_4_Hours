@@ -68,8 +68,8 @@ class ViewController: UIViewController {
     
     
     // 함수 분리
-    func downloadJson(_ url: String) -> Observable<String?> {
-        return Observable.just("Hello World")
+    func downloadJson(_ url: String) -> Observable<[String?]> {
+        return Observable.just(["Hello", "World"])
 //        return Observable.create { emmiter in
 //            emmiter.onNext("Hello World")
 //            emmiter.onCompleted()
@@ -143,7 +143,7 @@ class ViewController: UIViewController {
                 case .next(let json):
                     // 그래서 urlssesion에서 처리하고 있는 스레드가 main스레드가 아니기 떄문에 Error
                     DispatchQueue.main.async {
-                        self.editView.text = json
+                        self.editView.text = json[0]
                         self.setVisibleWithAnimation(self.activityIndicator, false)
                     }
                     
