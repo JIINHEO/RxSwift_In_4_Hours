@@ -21,6 +21,7 @@ class MenuViewController: UIViewController {
         updateUI()
         
         viewModel.totalPrice
+            .scan(0, accumulator: +)
             .map { $0.currencyKR() }
             .subscribe {
                 self.totalPrice.text = $0
