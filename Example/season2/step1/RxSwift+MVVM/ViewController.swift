@@ -132,25 +132,25 @@ class ViewController: UIViewController {
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
         
-        // 2. Observable로 오는 데이터를 받아서 처리하는 방법
-        let disposable = downloadJson(MEMBER_LIST_URL)
-        //   여기서는 self 사용할 때 순환참조가 안생기나? 생긴다!
-        // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
-        // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
-            .debug()
-            .map({ json in json?.count ?? 0 }) // oprator
-            .filter{ cnt in cnt > 0} // oprator
-            .map {"\($0)"} // oprator
-            .observeOn(MainScheduler.instance) // data를 중간에 바꾸는 sugar들을 oprator라고 한다
-        // https://reactivex.io/documentation/operators.html 에 가면 operator를 볼 수 있다.
-            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default))
-        // g 후에 observeOn에 다다르면 그 때 부터 observeOn에서 지정한 스레드로 변경됨 (위치 상관 없음)
-            .subscribe { json in
-//                DispatchQueue.main. async {
-                    self.editView.text = json
-                    self.setVisibleWithAnimation(self.activityIndicator, false)
-//                }
-            }
+//        // 2. Observable로 오는 데이터를 받아서 처리하는 방법
+//        let disposable = downloadJson(MEMBER_LIST_URL)
+//        //   여기서는 self 사용할 때 순환참조가 안생기나? 생긴다!
+//        // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
+//        // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
+//            .debug()
+//            .map({ json in json?.count ?? 0 }) // oprator
+//            .filter{ cnt in cnt > 0} // oprator
+//            .map {"\($0)"} // oprator
+//            .observeOn(MainScheduler.instance) // data를 중간에 바꾸는 sugar들을 oprator라고 한다
+//        // https://reactivex.io/documentation/operators.html 에 가면 operator를 볼 수 있다.
+//            .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .default))
+//        // g 후에 observeOn에 다다르면 그 때 부터 observeOn에서 지정한 스레드로 변경됨 (위치 상관 없음)
+//            .subscribe { json in
+////                DispatchQueue.main. async {
+//                    self.editView.text = json
+//                    self.setVisibleWithAnimation(self.activityIndicator, false)
+////                }
+//            }
 //            .subscribe { event in
 //                switch event {
 //                case .next(let json):
