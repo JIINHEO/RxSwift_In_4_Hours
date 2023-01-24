@@ -28,11 +28,18 @@ class ViewController: UIViewController {
     @IBOutlet var timerLabel: UILabel!
     @IBOutlet var editView: UITextView!
     
+    var disposable: [Disposable] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
             self?.timerLabel.text = "\(Date().timeIntervalSince1970)"
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        disposable.forEach { $0.dispose() }
     }
     
     private func setVisibleWithAnimation(_ v: UIView?, _ s: Bool) {
@@ -132,12 +139,13 @@ class ViewController: UIViewController {
         let jsonObservable = downloadJson(MEMBER_LIST_URL)
         let helloObservable = Observable.just("Hello world")
         
-        Observable.zip(jsonObservable, helloObservable) { $1 + "\n" + $0}
+        let d = Observable.zip(jsonObservable, helloObservable) { $1 + "\n" + $0}
             .observeOn(MainScheduler.instance)
             .subscribe(){ json in
                 self.editView.text = json
                 self.setVisibleWithAnimation(self.activityIndicator, false)
             }
+        disposable.append(d)
         
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
