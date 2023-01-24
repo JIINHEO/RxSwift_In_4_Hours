@@ -23,10 +23,10 @@ class MenuListViewModel {
     
     init() {
         let menus: [Menu] = [
-            Menu(name: "튀김1", price: 100, count: 0),
-            Menu(name: "튀김2", price: 100, count: 0),
-            Menu(name: "튀김3", price: 100, count: 0),
-            Menu(name: "튀김4", price: 100, count: 0),
+            Menu(id:0, name: "튀김1", price: 100, count: 0),
+            Menu(id:1, name: "튀김2", price: 100, count: 0),
+            Menu(id:2, name: "튀김3", price: 100, count: 0),
+            Menu(id:3, name: "튀김4", price: 100, count: 0),
         ]
         
         menuObservable.onNext(menus)
@@ -36,13 +36,29 @@ class MenuListViewModel {
         _ = menuObservable
             .map { menus in
                 menus.map { m in
-                    Menu(name: m.name, price: m.price, count: 0)
+                    Menu(id:m.id, name: m.name, price: m.price, count: 0)
                 }
             }
             .take(1) // 한번만 수행할거야
             .subscribe {
                 self.menuObservable.onNext($0)
             }
-
+    }
+    
+    func chanageCount(item: Menu, increase: Int){
+        _ = menuObservable
+            .map { menus in
+                menus.map { m in
+                    if m.id == item.id {
+                        return Menu(id:m.id, name: m.name, price: m.price, count: m.count + increase)
+                    } else {
+                        return Menu(id:m.id, name: m.name, price: m.price, count: m.count)
+                    }
+                }
+            }
+            .take(1) // 한번만 수행할거야
+            .subscribe {
+                self.menuObservable.onNext($0)
+            }
     }
 }
