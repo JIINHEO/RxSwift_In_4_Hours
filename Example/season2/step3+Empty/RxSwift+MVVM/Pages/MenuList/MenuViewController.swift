@@ -35,9 +35,11 @@ class MenuViewController: UIViewController {
         
         viewModel.itemCount
             .map {"\($0)"}
-            .catchErrorJustReturn("") // UI에서는 연결이 끊어져서 더이상 아무것도 처리해주지 않으면 안됨 - stream이 끊어지면 안됨 
-            .observeOn(MainScheduler.instance)
-            .bind(to: itemCountLabel.rx.text)
+//            .catchErrorJustReturn("") // UI에서는 연결이 끊어져서 더이상 아무것도 처리해주지 않으면 안됨 - stream이 끊어지면 안됨
+//            .observeOn(MainScheduler.instance)
+            .asDriver(onErrorJustReturn: "")
+            .(itemCountLabel.rx.text) // drive는 항상 main thread에서 동작함
+//            .bind(to: itemCountLabel.rx.text)
             .disposed(by: disposeBag)
         
         viewModel.totalPrice
