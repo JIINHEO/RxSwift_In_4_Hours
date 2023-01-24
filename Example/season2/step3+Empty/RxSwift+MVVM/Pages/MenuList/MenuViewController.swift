@@ -18,6 +18,14 @@ class MenuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewModel.itemCount
+            .map {"\($0)"}
+            .subscribe {
+                self.itgiemCountLabel.text = $0
+            }
+            .disposed(by: disposeBag)
+        
         viewModel.totalPrice
             .scan(0, accumulator: +)
             .map { $0.currencyKR() }
