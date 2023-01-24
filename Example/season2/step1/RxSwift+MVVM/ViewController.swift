@@ -57,6 +57,9 @@ class ViewController: UIViewController {
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
         return Observable.create { emitter in
             let url = URL(string: url)!
+            
+            // URLSession 자체가 메인스레드가 아닌 다른스레드에서 실행됨
+            // 따라서 onNext..Error 등 도 urlsession이 처리하고 있는 그 스레드에서 동작함
             let task = URLSession.shared.dataTask(with: url) { (data, _, error) in
                 guard error == nil else {
                     emitter.onError(error!)
@@ -115,8 +118,11 @@ class ViewController: UIViewController {
             .subscribe { event in
                 switch event {
                 case .next(let json):
-                    self.editView.text = json
-                    self.setVisibleWithAnimation(self.activityIndicator, false)
+                    // 그래서 urlssesion에서 처리하고 있는 스레드가 main스레드가 아니기 떄문에 Error
+                    DispatchQueue.main.async {
+                        self.editView.text = json
+                        self.setVisibleWithAnimation(self.activityIndicator, false)
+                    }
                     
                 case .completed:
                 // ompleted나 error 때에 수행을 다했다 여겨서 클로저가 없어짐 -> rc가 감소함
