@@ -54,7 +54,7 @@ class MenuListViewModel {
             .map { menus in
                 menus.map { m in
                     if m.id == item.id {
-                        return Menu(id:m.id, name: m.name, price: m.price, count: m.count + increase)
+                        return Menu(id:m.id, name: m.name, price: m.price, count: max(m.count + increase, 0))
                     } else {
                         return Menu(id:m.id, name: m.name, price: m.price, count: m.count)
                     }
