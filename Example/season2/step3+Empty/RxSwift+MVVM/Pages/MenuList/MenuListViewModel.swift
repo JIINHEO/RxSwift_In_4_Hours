@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import RxSwift
 
 class MenuListViewModel {
     
@@ -18,6 +19,6 @@ class MenuListViewModel {
     ]
     
     var itemsCount: Int = 5
-    var totalPrice: Int = 10000
+    var totalPrice:Observable<Int> = Observable.just(10_000)
     
 }
