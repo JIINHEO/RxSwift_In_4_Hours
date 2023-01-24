@@ -35,18 +35,12 @@ class MenuViewController: UIViewController {
         viewModel.itemCount
             .map {"\($0)"}
             .bind(to: itemCountLabel.rx.text)
-//            .subscribe {
-//                self.itgiemCountLabel.text = $0
-//            }
             .disposed(by: disposeBag)
         
         viewModel.totalPrice
             .scan(0, accumulator: +)
             .map { $0.currencyKR() }
             .bind(to: totalPrice.rx.text)
-//            .subscribe {
-//                self.totalPrice.text = $0
-//            }
             .disposed(by: disposeBag)
     }
 
@@ -77,35 +71,6 @@ class MenuViewController: UIViewController {
 
     @IBAction func onOrder(_ sender: UIButton) {
         // TODO: no selection
-        // showAlert("Order Fail", "No Orders")
-//        performSegue(withIdentifier: "OrderViewController", sender: nil)
-        
-//        viewModel.totalPrice.onNext(100)
-        // 그럼 외부에서 값을 넣어줘서 보여줄 수 없을까? -> 그래서 나온게 subject이다.
-        
-//        viewModel.menuObservable.onNext([
-//            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-//            Menu(id: 1, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-//            Menu(id: 2, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3))
-//        ])
-        
         viewModel.onOrder()
     }
 }
-
-//extension MenuViewController: UITableViewDataSource {
-//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return viewModel.menus.count
-//    }
-//
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "MenuItemTableViewCell") as! MenuItemTableViewCell
-//
-//        let menu = viewModel.menus[indexPath.row]
-//        cell.title.text = menu.name
-//        cell.price.text = "\(menu.price)"
-//        cell.count.text = "\(menu.count)"
-//
-//        return cell
-//    }
-//}
