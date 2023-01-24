@@ -66,6 +66,7 @@ class ViewController: UIViewController {
                     // 본 함수가 끝나고 나서 나중에 실행되는 함수여서 escaping을 해준다.
                     // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
                     f.onNext(json)
+                    f.onCompleted() // 순환참조 문제 해결
                 }
             }
             return Disposables.create()
@@ -84,13 +85,18 @@ class ViewController: UIViewController {
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
         
         let disposable = downloadJson(MEMBER_LIST_URL)
+        //   여기서는 self 사용할 때 순환참조가 안생기나? 생긴다!
+        // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
+        // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
             .subscribe { event in
                 switch event {
                 case .next(let json):
                     self.editView.text = json
                     self.setVisibleWithAnimation(self.activityIndicator, false)
+                    
                 case .completed:
-                    break
+                // ompleted나 error 때에 수행을 다했다 여겨서 클로저가 없어짐 -> rc가 감소함
+                    break 
                 case .error:
                     break
                 }
