@@ -18,8 +18,6 @@ class MenuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateUI()
-        
         viewModel.totalPrice
             .scan(0, accumulator: +)
             .map { $0.currencyKR() }
@@ -47,7 +45,7 @@ class MenuViewController: UIViewController {
 
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
     @IBOutlet var tableView: UITableView!
-    @IBOutlet var itemCountLabel: UILabel!
+    @IBOutlet var itgiemCountLabel: UILabel!
     @IBOutlet var totalPrice: UILabel!
 
     @IBAction func onClear() {
@@ -60,14 +58,6 @@ class MenuViewController: UIViewController {
         
         viewModel.totalPrice.onNext(100)
         // 그럼 외부에서 값을 넣어줘서 보여줄 수 없을까? -> 그래서 나온게 subject이다.
-        
-        // data가 바뀔때 마다 updateUI를 여기 저기서 호출해줘야 UI가 변경됨 
-        updateUI()
-    }
-    
-    func updateUI() {
-        itemCountLabel.text = "\(viewModel.itemsCount)"
-//        totalPrice.text = viewModel.totalPrice.currencyKR()
     }
 }
 
