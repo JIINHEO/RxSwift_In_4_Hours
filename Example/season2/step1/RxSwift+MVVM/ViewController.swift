@@ -138,9 +138,13 @@ class ViewController: UIViewController {
         // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
         // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
             .debug()
-            .observeOn(MainScheduler.instance)
+            .map({ json in json?.count ?? 0 }) // oprator
+            .filter{ cnt in cnt > 0} // oprator
+            .map {"\($0)"} // oprator
+            .observeOn(MainScheduler.instance) // data를 중간에 바꾸는 sugar들을 oprator라고 한다
+        // https://reactivex.io/documentation/operators.html 에 가면 operator를 볼 수 있다.
             .subscribe { json in
-//                DispatchQueue.main.async {
+//                DispatchQueue.main. async {
                     self.editView.text = json
                     self.setVisibleWithAnimation(self.activityIndicator, false)
 //                }
