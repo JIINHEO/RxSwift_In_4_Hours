@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
+// view만 보여준다
 class MenuViewController: UIViewController {
     // MARK: - Life Cycle
     let cellId = "MenuItemTableViewCell"

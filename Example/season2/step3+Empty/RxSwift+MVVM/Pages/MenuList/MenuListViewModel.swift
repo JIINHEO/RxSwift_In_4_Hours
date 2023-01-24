@@ -9,8 +9,11 @@
 import Foundation
 import RxSwift
 
+// 모든 생각과 데이터 처리는 viewModel에서
+// 따라서 viewModel만 testCase 돌리는게 좋다
+// view에서는 버그가 발생할 일이 별로 없다
 class MenuListViewModel {
-    
+    g
     // 데이터 이미 들어갔는데 나중에 subscribe를 했기 때문에 변경 초기값을 갖는 behavior로 변경
 
     var menuObservable = BehaviorSubject<[Menu]>(value: [])
