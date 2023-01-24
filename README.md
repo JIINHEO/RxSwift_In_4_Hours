@@ -84,7 +84,12 @@ RxSwift의 근본적인 학습 자체보다는, 빠르게 사용법을 익혀 �
 1. MVVM 아키텍쳐
 	- 어플리케이션 아키텍쳐<br/>
     ![architectures](docs/mvc_mvp_mvvm.jpeg)<br/>
-        크게보기([MVC](docs/mvc.jpeg), [MVP](docs/mvp.jpeg), [MVVM](docs/mvvm.jpeg))
+        크게보기([MVC](docs/mvc.jpeg), [MVP](docs/mvp.jpeg), [MVVM](docs/mvvm.jpeg))   
+	MVC - 사용자 유저 액션 input을 Controller가 받고 그 결과물에 대한 세팅을 View에 시킴 (model은 퓨어해서 test 가능) 나머지는 UIKit에 종속됨   
+	MVP - 그러면 컨트롤러의 역할을 제한하자 / ViewController를 View로 빼고 나머지 로직을 Presenter로 뺌 그래서 Presenter는 view에 그려져야될 요소를 view에 시켜서 지정 1:1  
+	      비슷한 데이터를 처리하더라도 view와 Presenter가 쌍이 여러개 생겨야하니 그럼.. Preseter를 하나로 공통으로 쓰는건 어때?      
+	MVVM - ViewModel은 domainModel은 다르다 / viewmodel이 view에 뭘 그려야할지 지시하지 않고 view가 viewModel의 값을 바라보다가 스스로 갱신    
+	
 	- 왜 MVVM을 쓰는가?
 	- MVVM과 RxSwift의 꿀조합
 
