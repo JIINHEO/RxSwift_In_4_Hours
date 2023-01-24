@@ -69,7 +69,7 @@ class ViewController: UIViewController {
     
     // 함수 분리
     func downloadJson(_ url: String) -> Observable<String?> {
-        return Observable.from(["Hello", "World"])
+        return Observable.from(["Hello", "World"]) // sugar api
 //        return Observable.create { emmiter in
 //            emmiter.onNext("Hello World")
 //            emmiter.onCompleted()
@@ -138,22 +138,23 @@ class ViewController: UIViewController {
         // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
         // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
             .debug()
-            .subscribe { event in
-                switch event {
-                case .next(let json):
-                    // 그래서 urlssesion에서 처리하고 있는 스레드가 main스레드가 아니기 떄문에 Error
-                    DispatchQueue.main.async {
-                        self.editView.text = json
-                        self.setVisibleWithAnimation(self.activityIndicator, false)
-                    }
-                    
-                case .completed:
-                // ompleted나 error 때에 수행을 다했다 여겨서 클로저가 없어짐 -> rc가 감소함
-                    break
-                case .error:
-                    break
-                }
-            }
+            .subscribe(onNext: {print($0)}) //
+//            .subscribe { event in
+//                switch event {
+//                case .next(let json):
+//                    // 그래서 urlssesion에서 처리하고 있는 스레드가 main스레드가 아니기 떄문에 Error
+//                    DispatchQueue.main.async {
+//                        self.editView.text = json
+//                        self.setVisibleWithAnimation(self.activityIndicator, false)
+//                    }
+//
+//                case .completed:
+//                // ompleted나 error 때에 수행을 다했다 여겨서 클로저가 없어짐 -> rc가 감소함
+//                    break
+//                case .error:
+//                    break
+//                }
+//            }
         // 취소시킴
         // disposable.dispose()
         
