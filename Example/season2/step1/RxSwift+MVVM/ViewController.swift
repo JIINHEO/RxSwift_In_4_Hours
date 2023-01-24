@@ -54,23 +54,32 @@ class ViewController: UIViewController {
     
     // 함수 분리
     func downloadJson(_ url: String) -> Observable<String?> {
-        return Observable.create() { f in
-            // 그렇다면 completion 말고 return값으로 받을 수 없을까?
-            DispatchQueue.global().async {
-                // 문제는 리턴을 못해서 completion을 사용해야함
-                let url = URL(string: MEMBER_LIST_URL)!
-                let data = try! Data(contentsOf: url)
-                let json = String(data: data, encoding: .utf8)
-                
-                DispatchQueue.main.async {
-                    // 본 함수가 끝나고 나서 나중에 실행되는 함수여서 escaping을 해준다.
-                    // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
-                    f.onNext(json)
-                    f.onCompleted() // 순환참조 문제 해결
-                }
-            }
+        // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
+        return Observable.create { emitter in
+            emitter.onNext("Hello") // 데이터를 여러개 내려줘도 됨
+            emitter.onNext("World")
+            emitter.onCompleted()
+            
             return Disposables.create()
         }
+
+//        return Observable.create() { f in
+//            // 그렇다면 completion 말고 return값으로 받을 수 없을까?
+//            DispatchQueue.global().async {
+//                // 문제는 리턴을 못해서 completion을 사용해야함
+//                let url = URL(string: MEMBER_LIST_URL)!
+//                let data = try! Data(contentsOf: url)
+//                let json = String(data: data, encoding: .utf8)
+//
+//                DispatchQueue.main.async {
+//                    // 본 함수가 끝나고 나서 나  중에 실행되는 함수여서 escaping을 해준다.
+//                    // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
+//                    f.onNext(json)
+//                    f.onCompleted() // 순환참조 문제 해결
+//                }
+//            }
+//            return Disposables.create()
+//        }
     }
     
     // MARK: SYNC
@@ -84,6 +93,7 @@ class ViewController: UIViewController {
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
         
+        // 2. Observable로 오는 데이터를 받아서 처리하는 방법
         let disposable = downloadJson(MEMBER_LIST_URL)
         //   여기서는 self 사용할 때 순환참조가 안생기나? 생긴다!
         // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
@@ -102,6 +112,11 @@ class ViewController: UIViewController {
                 }
             }
         // 취소시킴
-//        disposable.dispose()
+        // disposable.dispose()
+        
+        // 알아야 할 것들
+        // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
+        // 2. Observable로 오는 데이터를 받아서 처리하는 방법
+        
     }
 }
