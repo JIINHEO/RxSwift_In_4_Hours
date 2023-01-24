@@ -44,9 +44,17 @@ class ViewController: UIViewController {
         })
     }
     
+    // Utility
+    
+    // promiseKit - promise - then
+    // Bolt - bolt - then
+    // RxSwift 비동기적으로 생기는 데이터를 리턴값으로 전달하기 위해
+    // (나중에 생기는 데이터 = Obsevable)
+    // (나중에 오면 = subscribe) event가 옴 (next, error, completed)
+    
     // 함수 분리
-    func downloadJson(_ url: String) -> 나중에생기는데이터<String?> {
-        return 나중에생기는데이터 { f in
+    func downloadJson(_ url: String) -> Observable<String?> {
+        return Observable.create() { f in
             // 그렇다면 completion 말고 return값으로 받을 수 없을까?
             DispatchQueue.global().async {
                 // 문제는 리턴을 못해서 completion을 사용해야함
@@ -57,9 +65,10 @@ class ViewController: UIViewController {
                 DispatchQueue.main.async {
                     // 본 함수가 끝나고 나서 나중에 실행되는 함수여서 escaping을 해준다.
                     // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
-                    f(json)
+                    f.onNext(json)
                 }
             }
+            return Disposables.create()
         }
     }
     
@@ -74,11 +83,17 @@ class ViewController: UIViewController {
         // 비동기: 현재 작업은 그대로 진행하고 다른 스레드에서 원하는 작업을 비동기적으로 동시에 수행
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
         
-        let json:나중에생기는데이터<String?> = downloadJson(MEMBER_LIST_URL)
-        
-        json.나중에오면 { json in
-            self.editView.text = json
-            self.setVisibleWithAnimation(self.activityIndicator, false)
-        }
+        downloadJson(MEMBER_LIST_URL)
+            .subscribe { event in
+                switch event {
+                case .next(let json):
+                    self.editView.text = json
+                    self.setVisibleWithAnimation(self.activityIndicator, false)
+                case .completed:
+                    break
+                case .error:
+                    break
+                }
+            }
     }
 }
