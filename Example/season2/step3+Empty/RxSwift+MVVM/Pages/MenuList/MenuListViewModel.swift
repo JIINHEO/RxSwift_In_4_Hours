@@ -11,7 +11,9 @@ import RxSwift
 
 class MenuListViewModel {
     
-    var menuObservable = PublishSubject<[Menu]>()
+    // 데이터 이미 들어갔는데 나중에 subscribe를 했기 때문에 변경 초기값을 갖는 behavior로 변경
+
+    var menuObservable = BehaviorSubject<[Menu]>(value: [])
     
     lazy var itemCount = menuObservable.map { $0.map { $0.count}.reduce(0, +) }
     lazy var totalPrice = menuObservable.map { $0.map { $0.price * $0.count}.reduce(0, +) }
