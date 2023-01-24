@@ -17,4 +17,7 @@ class MenuListViewModel {
         Menu(name: "튀김4", price: 100, count: 0),
     ]
     
+    let itemsCount: Int = 5
+    let totalPrice: Int = 10000
+    
 }

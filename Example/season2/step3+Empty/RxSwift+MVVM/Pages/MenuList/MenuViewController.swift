@@ -17,6 +17,9 @@ class MenuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        itemCountLabel.text = "\(viewModel.itemsCount)"
+        totalPrice.text = viewModel.totalPrice.currencyKR()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
