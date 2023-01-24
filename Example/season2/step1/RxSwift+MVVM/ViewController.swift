@@ -31,6 +31,21 @@ class ViewController: UIViewController {
             self?.view.layoutIfNeeded()
         })
     }
+    
+    // 함수 분리
+    func downloadJson(_ url: String, completion: @escaping (String?) -> Void) {
+        DispatchQueue.global().async {
+            // 문제는 리턴을 못해서 completion을 사용해야함
+            let url = URL(string: MEMBER_LIST_URL)!
+            let data = try! Data(contentsOf: url)
+            let json = String(data: data, encoding: .utf8)
+            DispatchQueue.main.async {
+                // 본 함수가 끝나고 나서 나중에 실행되는 함수여서 escaping을 해준다.
+                // 만약 옵셔널클로저인경우에는 escaping이 default라 안해줘도됨
+                 completion(json)
+            }
+        }
+    }
 
     // MARK: SYNC
     
@@ -44,12 +59,8 @@ class ViewController: UIViewController {
         // 다른 스레드에서 멀티스레드로 일을 처리한 다음에 그 결과를 비동기적으로 받아서 처리를 함
         
         DispatchQueue.global().async {
-            let url = URL(string: MEMBER_LIST_URL)!
-            let data = try! Data(contentsOf: url)
-            let json = String(data: data, encoding: .utf8)
-
-            DispatchQueue.main.async {
-                // UI작업은 main 에서
+            
+            self.downloadJson(MEMBER_LIST_URL) { json in
                 self.editView.text = json
                 self.setVisibleWithAnimation(self.activityIndicator, false)
             }
