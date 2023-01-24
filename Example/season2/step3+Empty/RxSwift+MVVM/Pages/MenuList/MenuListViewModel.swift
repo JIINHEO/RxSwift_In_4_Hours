@@ -33,9 +33,12 @@ class MenuListViewModel {
                 return response.menus
             }
             .map { menuItems -> [Menu] in
-                return menuItems.map {
-                    Menu.fromMenuItems(id: 0, item: $0)
-                }
+                var menus: [Menu] = []
+                menuItems.enumerated().forEach({ (index, item) in
+                    let menu = Menu.fromMenuItems(id: index, item: item)
+                    menus.append(menu)
+                })
+                return menus
             }
             .take(1)
             .bind(to: menuObservable)
