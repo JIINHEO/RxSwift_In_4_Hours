@@ -52,6 +52,21 @@ class ViewController: UIViewController {
     // (나중에 생기는 데이터 = Obsevable)
     // (나중에 오면 = subscribe) event가 옴 (next, error, completed)
     
+    /*
+     Observable의 생명 주기
+     1. Create (만들어만 놓는것)
+     2. Subscribe 됬을 때 동작함
+     3. onNext
+     ------- 끝 -------
+     4. onCompleted / onError
+     5. Disposed
+     
+     create 하고 dispose 하고 다시 뭘 하려고 했을 떄 재사용 안됨
+     subscribe를 해야함
+     create된 Observable의 첫번째 subscribe랑 Observable의 두번째 subscribe랑은 다름
+     */
+    
+    
     // 함수 분리
     func downloadJson(_ url: String) -> Observable<String?> {
         // 1. 비동기로 생기는 데이터를 Observable로 감싸서 리턴하는 방법
@@ -115,6 +130,7 @@ class ViewController: UIViewController {
         //   여기서는 self 사용할 때 순환참조가 안생기나? 생긴다!
         // 순환참조가 생기는 이유는 크로저가 self를 캡처하면서 rc가 증가하기 때문인데
         // 클로저가 사라지면서 self에 대한 rc도 놓기때문에 감소한다.
+            .debug()
             .subscribe { event in
                 switch event {
                 case .next(let json):
