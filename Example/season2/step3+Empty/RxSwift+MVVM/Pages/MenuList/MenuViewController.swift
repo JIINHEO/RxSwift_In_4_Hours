@@ -83,11 +83,13 @@ class MenuViewController: UIViewController {
 //        viewModel.totalPrice.onNext(100)
         // 그럼 외부에서 값을 넣어줘서 보여줄 수 없을까? -> 그래서 나온게 subject이다.
         
-        viewModel.menuObservable.onNext([
-            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-            Menu(id: 1, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
-            Menu(id: 2, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3))
-        ])
+//        viewModel.menuObservable.onNext([
+//            Menu(id: 0, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
+//            Menu(id: 1, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3)),
+//            Menu(id: 2, name: "changed", price: Int.random(in: 100...1000), count: Int.random(in: 0...3))
+//        ])
+        
+        viewModel.onOrder()
     }
 }
 

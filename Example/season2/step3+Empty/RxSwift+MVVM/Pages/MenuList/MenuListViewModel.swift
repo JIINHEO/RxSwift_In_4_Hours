@@ -32,6 +32,10 @@ class MenuListViewModel {
         menuObservable.onNext(menus)
     }
     
+    func onOrder() {
+        
+    }
+    
     func clearAllItemSelections() {
         _ = menuObservable
             .map { menus in
